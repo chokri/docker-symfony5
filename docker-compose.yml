@@ -1,0 +1,55 @@
+version: '3'
+
+volumes:
+    mysql_data:
+        driver: local
+
+services:
+    webserver:
+        container_name: webserver
+        build: ./webserver
+        ports:
+            - "80:80"
+        depends_on: 
+            - webapp
+        volumes:
+            - ./logs/webserver:/var/log/nginx:cached
+            - ./webapp:/var/www/webapp:cached
+        networks:
+        - local
+
+    database:
+        container_name: database
+        image: mysql:5.7
+        command: ["--default-authentication-plugin=mysql_native_password"]
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: database
+            MYSQL_USER: database
+            MYSQL_PASSWORD: database
+        networks:
+        - local
+
+    webapp:
+        container_name: webapp
+        build: ./webapp-dockerfile
+        ports:
+            - "9000:9001"
+        volumes:
+            - ./webapp:/var/www/webapp:cached
+            - ./logs/webapp:/var/www/webapp/var/log:cached
+        depends_on: 
+            - database
+        networks:
+        - local
+
+    maildev:
+        image: maildev/maildev
+        ports:
+        - "1080:1080"
+        networks:
+        - local
+networks:
+    local:
