@@ -1,2 +1,1 @@
-# Place you symfony 5 project here
-
+# Place your CakePHP project here

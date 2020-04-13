@@ -34,9 +34,21 @@ services:
 
     webapp:
         container_name: webapp
-        build: ./webapp-dockerfile
+        build: 
+            context: ./webapp-dockerfile
+            args: 
+                GITHUB_TOKEN: ${GITHUB_TOKEN}
         ports:
             - "9000:9001"
+        environment: 
+            DATABASE_URL: "mysql://database:database@database/database?encoding=utf8&timezone=UTC&cacheMetadata=true&quoteIdentifiers=false&persistent=false"
+            APP_NAME: "Cake"
+            DEBUG: "true"
+            APP_ENCODING: "UTF-8"
+            APP_DEFAULT_LOCALE: "en_US"
+            APP_DEFAULT_TIMEZONE: "UTC"
+            SECURITY_SALT: "rI995u8dVwv3cs88Bd44ufdpo9wOqhAeChkKEt95t92JvqSpZ2HadCCrI339UlNw"
+            EMAIL_TRANSPORT_DEFAULT_URL: "smtp://maildev:25"
         volumes:
             - ./webapp:/var/www/webapp:cached
             - ./logs/webapp:/var/www/webapp/var/log:cached

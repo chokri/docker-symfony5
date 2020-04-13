@@ -1,7 +1,9 @@
 FROM alpine:3.10
+ARG GITHUB_TOKEN
 
 RUN apk add --update --no-cache \
     coreutils \
+    php7-sqlite3 \
     php7-fpm \
     php7-apcu \
     php7-ctype \
@@ -41,6 +43,6 @@ COPY xdebug.ini  /etc/php7/conf.d/
 COPY webapp.pool.conf /etc/php7/php-fpm.d/
 
 CMD ["php-fpm7", "-F"]
-
+RUN composer config --global --auth github-oauth.github.com ${GITHUB_TOKEN}
 WORKDIR /var/www/webapp
 EXPOSE 9001
